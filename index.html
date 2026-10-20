@@ -103,6 +103,7 @@ footer{border-top:2px solid #253244;color:#607084}
 #viewer-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:2px solid #253244;border-radius:7px;background:#fff;padding:9px 15px;font-weight:700}
 @media(max-width:600px){
  .portfolio-group.single-group .media video{max-height:58vh;max-height:58svh}
+ .portfolio-group.away-group .group-grid{grid-template-columns:1fr}
  #video-viewer{width:calc(100vw - 28px);max-width:calc(100vw - 28px);max-height:78vh;max-height:78svh;padding:7px;border-radius:8px}
  .viewer-top{padding-bottom:6px}.viewer-top strong{font-size:12px}.viewer-top button{padding:4px 8px;font-size:12px}
  .viewer-body{max-height:calc(78vh - 52px);max-height:calc(78svh - 52px)}
@@ -195,7 +196,7 @@ img,video,svg{max-width:100%}
 <dialog id="video-viewer" aria-label="포트폴리오 영상 크게 보기"><div class="viewer-top"><strong id="viewer-title">영상 보기</strong><button type="button" id="viewer-close" aria-label="영상 닫기">닫기 ×</button></div><div class="viewer-body"><video id="viewer-video" autoplay muted loop playsinline></video><button type="button" id="viewer-play" hidden>▶ 재생</button></div></dialog>
 <script>
 // 수정: 프로필·문의 URL은 CONFIG, 기능·가격·설명은 FEATURES, 영상은 VIDEOS.
-const CONFIG={author:'와루도 API · 뚜따',bio:'상상하시던 API 문의 주세요\n옷장 리모컨, 와루도 합방 설정 등 세팅 지원 가능',profileImage:'',inquiryUrl:'',draft:true,parentOrigin:'*'};
+const CONFIG={author:'와루도 API · 뚜따',bio:'상상하시던 API 문의 주세요\n옷장 리모컨, 와루도 합방 설정 등 세팅 지원 가능',profileImage:'assets/profile.png',inquiryUrl:'',draft:true,parentOrigin:'*'};
 const FEATURES=[
  {id:'transform',name:'마법소녀변신',price:60000,description:'포즈 커스텀 가능'},
  {id:'karaoke',name:'노래방',price:50000,description:'노래방 맵 자체 제작'},
@@ -212,12 +213,16 @@ const FEATURES=[
 // 파일명 앞 숫자는 정렬에만 사용합니다. 자리비움 두 파일에는 뒤 순서인 10, 11을 붙였습니다.
 // 현재 전달받은 영상은 10개이며 7번은 비어 있어, 받은 영상만 순서대로 표시합니다.
 const VIDEOS=[
- {order:1,file:'2.노래방.mp4',src:'assets/2.노래방.mp4',feature:'karaoke',title:'노래방'},
- {order:2,file:'5.던지기.mp4',src:'assets/5.던지기.mp4',feature:'throw',title:'물건던지기'},
- {order:3,file:'6.미아핑.mp4',src:'assets/6.미아핑.mp4',feature:'ping',title:'미아핑'},
- {order:4,file:'3.뻐큐앤하트.mp4',src:'assets/3.뻐큐앤하트.mp4',feature:'heart',title:'뻑하트'},
- {order:5,file:'8.뿅망치.mp4',src:'assets/8.뿅망치.mp4',feature:'hammer',title:'뿅망치'},
- {order:6,file:'4.강력 던지기.mp4',src:'assets/4.강력 던지기.mp4',feature:'strong',title:'쌔게던지기'}
+ {order:1,file:'1.마법소녀변신.mp4',src:'assets/1.마법소녀변신.mp4',feature:'transform'},
+ {order:2,file:'2.노래방.mp4',src:'assets/2.노래방.mp4',feature:'karaoke'},
+ {order:3,file:'3.뻐큐앤하트.mp4',src:'assets/3.뻐큐앤하트.mp4',feature:'heart',title:'뻑하트'},
+ {order:4,file:'4.강력 던지기.mp4',src:'assets/4.강력 던지기.mp4',feature:'strong',title:'쌔게던지기'},
+ {order:5,file:'5.던지기.mp4',src:'assets/5.던지기.mp4',feature:'throw',title:'물건던지기'},
+ {order:6,file:'6.미아핑.mp4',src:'assets/6.미아핑.mp4',feature:'ping'},
+ {order:7,file:'8.뿅망치.mp4',src:'assets/8.뿅망치.mp4',feature:'hammer'},
+ {order:8,file:'9.이세계트럭.mp4',src:'assets/9.이세계트럭.mp4',feature:'truck'},
+ {order:9,file:'10.자리비움_ZzzzZ.mp4',src:'assets/10.자리비움_ZzzzZ.mp4',feature:'zzz'},
+ {order:10,file:'11.자리비움_콧방울.mp4',src:'assets/11.자리비움_콧방울.mp4',feature:'bubble'}
 ];
 const NOTES=[
 '사용 중인 와루도 일반 / Pro 구분을 정확히 알려주세요. 원하는 연출과 실행 조건은 문의 시 함께 전달해 주세요.',
@@ -238,9 +243,11 @@ function videoOrder(v){if(Number.isFinite(v.order))return v.order;const match=v.
 function sortedVideos(){const s=[...VIDEOS].sort((a,b)=>videoOrder(a)-videoOrder(b));if(s.length){const orders=s.map(videoOrder);if(new Set(orders).size!==orders.length||s.some(v=>!FEATURES.some(f=>f.id===v.feature)))throw Error('영상 순서 또는 기능 연결을 확인해 주세요.');}return s;}
 function card(f,v){return `<article class="work"><div class="media">${v?`<video autoplay muted loop playsinline preload="none" data-src="${esc(v.src)}" aria-label="${esc(v.title||f.name)} 영상 크게 보기" title="눌러서 크게 보기"></video><button type="button" class="play" hidden>▶ 재생</button><p class="media-error" hidden>영상을 불러오지 못했습니다.</p>`:`<div class="placeholder"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7" stroke="currentColor"/><path d="M13 10l9 6-9 6V10Z" fill="currentColor"/></svg><span>영상 연결 예정</span></div>`}</div><div class="work-info"><div class="work-head"><h3>${esc(v?.title||f.name)}</h3><span class="price">${price(f)}</span></div>${f.description?`<p>${esc(f.description)}</p>`:''}${['strong','throw'].includes(f.id)?'<div class="tags"><span class="tag">숲 · 별풍선 PROP</span><span class="tag">치지직 · 치즈 PROP</span></div>':''}</div></article>`;}
 const PORTFOLIO_GROUPS=[
+ {title:'신규 의상 공개',ids:['transform']},
  {title:'기타',ids:['karaoke']},
- {title:'기본 API',ids:['throw','ping','hammer','strong']},
- {title:'시청자 티키타카',ids:['heart']}
+ {title:'시청자 티키타카',ids:['heart']},
+ {title:'기본 API',ids:['strong','throw','ping','hammer','truck']},
+ {title:'자리비움 연출',ids:['zzz','bubble']}
 ];
 function renderCatalog(){let videos;try{videos=sortedVideos();}catch(e){$('#catalog').textContent=e.message;return;}
  const videoByFeature=new Map();
