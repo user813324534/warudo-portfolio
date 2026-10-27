@@ -206,12 +206,13 @@ const FEATURES=[
  {id:'ping',name:'미아핑',price:20000,description:''},
  {id:'hammer',name:'뿅망치',price:20000,description:'때리는 횟수 선택 가능'},
  {id:'truck',name:'이세계트럭',price:10000,description:''},
+ {id:'eyeheart',name:'눈하트',price:35000,description:''},
  {id:'zzz',name:'자리비움 ZZZ',price:20000,description:''},
  {id:'bubble',name:'자리비움 콧방울',price:20000,description:''},
  {id:'custom',name:'자체 제작 요청',price:null,description:''}
 ];
 // 파일명 앞 숫자는 정렬에만 사용합니다. 자리비움 두 파일에는 뒤 순서인 10, 11을 붙였습니다.
-// 현재 전달받은 영상은 10개이며 7번은 비어 있어, 받은 영상만 순서대로 표시합니다.
+// 12번 눈하트 영상은 assets/12.눈하트.mp4를 사용합니다. 7번 번호는 비어 있습니다.
 const VIDEOS=[
  {order:1,file:'1.마법소녀변신.mp4',src:'assets/1.마법소녀변신.mp4',feature:'transform'},
  {order:2,file:'2.노래방.mp4',src:'assets/2.노래방.mp4',feature:'karaoke'},
@@ -222,7 +223,8 @@ const VIDEOS=[
  {order:7,file:'8.뿅망치.mp4',src:'assets/8.뿅망치.mp4',feature:'hammer'},
  {order:8,file:'9.이세계트럭.mp4',src:'assets/9.이세계트럭.mp4',feature:'truck'},
  {order:9,file:'10.자리비움_ZzzzZ.mp4',src:'assets/10.자리비움_ZzzzZ.mp4',feature:'zzz'},
- {order:10,file:'11.자리비움_콧방울.mp4',src:'assets/11.자리비움_콧방울.mp4',feature:'bubble'}
+ {order:10,file:'11.자리비움_콧방울.mp4',src:'assets/11.자리비움_콧방울.mp4',feature:'bubble'},
+ {order:12,file:'12.눈하트.mp4',src:'assets/12.눈하트.mp4',feature:'eyeheart'}
 ];
 const NOTES=[
 '사용 중인 와루도 일반 / Pro 구분을 정확히 알려주세요. 원하는 연출과 실행 조건은 문의 시 함께 전달해 주세요.',
@@ -236,9 +238,9 @@ const NOTES=[
 ];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const money=n=>n.toLocaleString('ko-KR')+'원',price=f=>f.price===null?'작가 협의':money(f.price);
+const money=n=>n.toLocaleString('ko-KR')+'원',price=f=>f.price===null?(f.id==='custom'?'작가 협의':'가격 협의'):money(f.price);
 const selected=()=>FEATURES.filter(f=>$(`[data-feature="${f.id}"]`).checked);
-function totalLabel(items){const total=items.reduce((a,f)=>a+(f.price??0),0),custom=items.some(f=>f.price===null);return items.length===1&&custom?'자체 제작 비용 별도 협의':`선택 기능 합계 ${money(total)}${custom?' + 자체 제작 비용 별도 협의':''}`;}
+function totalLabel(items){const total=items.reduce((a,f)=>a+(f.price??0),0),custom=items.some(f=>f.id==='custom'),unpriced=items.filter(f=>f.price===null&&f.id!=='custom'),parts=[];if(items.some(f=>f.price!==null)||!items.length)parts.push(`선택 기능 합계 ${money(total)}`);if(custom)parts.push('자체 제작 비용 별도 협의');if(unpriced.length)parts.push(`${unpriced.map(f=>f.name).join(', ')} 가격 협의`);return parts.join(' + ');}
 function videoOrder(v){if(Number.isFinite(v.order))return v.order;const match=v.file.match(/^(\d+)/);if(!match)throw Error('영상 순서를 확인해 주세요.');return Number(match[1]);}
 function sortedVideos(){const s=[...VIDEOS].sort((a,b)=>videoOrder(a)-videoOrder(b));if(s.length){const orders=s.map(videoOrder);if(new Set(orders).size!==orders.length||s.some(v=>!FEATURES.some(f=>f.id===v.feature)))throw Error('영상 순서 또는 기능 연결을 확인해 주세요.');}return s;}
 function card(f,v){return `<article class="work"><div class="media">${v?`<video autoplay muted loop playsinline preload="none" data-src="${esc(v.src)}" aria-label="${esc(v.title||f.name)} 영상 크게 보기" title="눌러서 크게 보기"></video><button type="button" class="play" hidden>▶ 재생</button><p class="media-error" hidden>영상을 불러오지 못했습니다.</p>`:`<div class="placeholder"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7" stroke="currentColor"/><path d="M13 10l9 6-9 6V10Z" fill="currentColor"/></svg><span>영상 연결 예정</span></div>`}</div><div class="work-info"><div class="work-head"><h3>${esc(v?.title||f.name)}</h3><span class="price">${price(f)}</span></div>${f.description?`<p>${esc(f.description)}</p>`:''}${['strong','throw'].includes(f.id)?'<div class="tags"><span class="tag">숲 · 별풍선 PROP</span><span class="tag">치지직 · 치즈 PROP</span></div>':''}</div></article>`;}
@@ -246,7 +248,7 @@ const PORTFOLIO_GROUPS=[
  {title:'신규 의상 공개',ids:['transform']},
  {title:'기타',ids:['karaoke']},
  {title:'시청자 티키타카',ids:['heart']},
- {title:'기본 API',ids:['strong','throw','ping','hammer','truck']},
+ {title:'기본 API',ids:['strong','throw','ping','hammer','truck','eyeheart']},
  {title:'자리비움 연출',ids:['zzz','bubble']}
 ];
 function renderCatalog(){let videos;try{videos=sortedVideos();}catch(e){$('#catalog').textContent=e.message;return;}
