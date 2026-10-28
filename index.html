@@ -89,18 +89,27 @@ footer{border-top:2px solid #253244;color:#607084}
 }
 @media(prefers-reduced-motion:reduce){.button{transition:none}}
 
-/* Single-video groups and click-to-expand inline playback. */
+/* Large single-video categories and a compact centered viewer. */
 .portfolio-group.single-group .group-grid{grid-template-columns:1fr}
 .portfolio-group.single-group .work{width:100%}
-.portfolio-group.single-group .media video{width:100%;max-height:520px;object-fit:contain}
-.portfolio-group .media video{cursor:zoom-in}
-.portfolio-group .work.is-expanded{grid-column:1/-1}
-.portfolio-group .work.is-expanded .media video{width:100%;max-height:72vh;max-height:72svh;object-fit:contain;cursor:zoom-out}
+.portfolio-group.single-group .media video{width:100%;max-height:520px;object-fit:contain;cursor:zoom-in}
+#video-viewer{position:fixed;top:var(--viewer-top,12px);left:50%;transform:translateX(-50%);margin:0;width:min(920px,calc(100vw - 32px));max-width:calc(100vw - 32px);max-height:calc(100dvh - 24px);padding:10px;border:2px solid #253244;border-radius:10px;background:#fff;box-shadow:5px 5px 0 #253244;overflow:hidden}
+#video-viewer::backdrop{background:rgba(15,23,34,.72)}
+.viewer-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px 8px;color:#202a36}
+.viewer-top strong{font-size:14px}
+.viewer-top button{border:2px solid #253244;border-radius:6px;background:#fff;padding:5px 10px;font-weight:700}
+.viewer-body{position:relative;display:grid;place-items:center;max-height:calc(100dvh - 82px);border-radius:6px;background:#f1f5fa;overflow:hidden}
+#viewer-video{display:block;width:auto;height:auto;max-width:100%;max-height:calc(100dvh - 90px);object-fit:contain}
+#viewer-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:2px solid #253244;border-radius:7px;background:#fff;padding:9px 15px;font-weight:700}
 @media(max-width:600px){
- .portfolio-group.away-group .group-grid{grid-template-columns:1fr}
  .portfolio-group.single-group .media video{max-height:58vh;max-height:58svh}
- .portfolio-group .work.is-expanded .media video{max-height:72vh;max-height:72svh}
+ .portfolio-group.away-group .group-grid{grid-template-columns:1fr}
+ #video-viewer{width:calc(100vw - 28px);max-width:calc(100vw - 28px);max-height:78vh;max-height:78svh;padding:7px;border-radius:8px}
+ .viewer-top{padding-bottom:6px}.viewer-top strong{font-size:12px}.viewer-top button{padding:4px 8px;font-size:12px}
+ .viewer-body{max-height:calc(78vh - 52px);max-height:calc(78svh - 52px)}
+ #viewer-video{max-width:100%;max-height:calc(78vh - 72px);max-height:calc(78svh - 72px)}
 }
+
 
 /* Three major content groups: portfolio through away effects, process, request form. */
 #catalog>.portfolio-group+.portfolio-group{margin-top:54px}
@@ -184,6 +193,7 @@ img,video,svg{max-width:100%}
 <section class="process-section"><div class="section-head"><div><p class="eyebrow">PROCESS</p><h2>진행 과정</h2></div></div><div class="process"><div class="step"><small>01</small><h3>문의</h3></div><div class="step"><small>02</small><h3>견적 및 일정안내</h3></div><div class="step"><small>03</small><h3>주문</h3></div><div class="step"><small>04</small><h3>파일 전달 및 원격 셋팅</h3></div></div></section>
 <section id="request"><div class="section-head"><div><p class="eyebrow">REQUEST</p><h2>신청 양식</h2></div><p>작성 후 복사하여 아트머그 문의로 보내주세요.</p></div><noscript>신청서 이용 시 JavaScript를 허용해 주세요.</noscript><form id="form" novalidate><div class="form-grid"><label class="field full"><span>방송 닉네임 <small class="required">필수</small></span><input name="nickname" required placeholder="방송에서 사용하는 닉네임"></label><label class="field full"><span>방송국 주소 <small class="required">필수</small></span><input name="channel" type="url" required placeholder="https://방송 채널 주소"></label><div class="full"><span class="label">와루도 버전 <small class="required">필수</small></span><div class="radios" id="edition"><label><input type="radio" name="edition" value="일반">일반</label><label><input type="radio" name="edition" value="Pro">Pro</label></div></div><div class="full"><span class="label">원하는 API <small class="required">복수 선택 가능</small></span><div class="choices" id="choices"></div></div><label class="field full"><span>기타 문의사항</span><textarea name="extra" placeholder="원하는 연출, 실행 조건, 궁금한 점이나 참고 링크를 적어주세요."></textarea><p class="help" id="custom-help" hidden>자체 제작 요청은 원하는 동작과 효과를 구체적으로 적어주세요.</p></label><div class="total full"><span>선택 항목 기준 합계</span><strong id="total" aria-live="polite">선택 기능 합계 0원</strong></div></div><div class="actions"><button class="button primary" type="submit">신청 내용 복사하기</button><a id="inquiry" class="button" target="_blank" rel="noopener noreferrer" hidden>아트머그 문의하기 ↗</a></div><p class="help">하단 주의사항을 확인한 후 문의해 주세요.</p><p id="status" role="status"></p><div id="manual" hidden><label class="field"><span>완성된 신청서</span><textarea id="output" readonly></textarea></label><button type="button" class="button" id="select-output">전체 선택하여 직접 복사</button></div></form></section>
 <section class="notes"><div class="section-head"><div><p class="eyebrow">PLEASE READ</p><h2>주의사항</h2></div></div><ul class="notes-list" id="notes"></ul></section></main><footer>WARUDO API · BLUEPRINT</footer>
+<dialog id="video-viewer" aria-label="포트폴리오 영상 크게 보기"><div class="viewer-top"><strong id="viewer-title">영상 보기</strong><button type="button" id="viewer-close" aria-label="영상 닫기">닫기 ×</button></div><div class="viewer-body"><video id="viewer-video" autoplay muted loop playsinline></video><button type="button" id="viewer-play" hidden>▶ 재생</button></div></dialog>
 <script>
 // 수정: 프로필·문의 URL은 CONFIG, 기능·가격·설명은 FEATURES, 영상은 VIDEOS.
 const CONFIG={author:'와루도 API · 뚜따',bio:'상상하시던 API 문의 주세요\n옷장 리모컨, 와루도 합방 설정 등 세팅 지원 가능',profileImage:'assets/profile.png',inquiryUrl:'',draft:true,parentOrigin:'*'};
@@ -235,7 +245,7 @@ const selected=()=>FEATURES.filter(f=>$(`[data-feature="${f.id}"]`).checked);
 function totalLabel(items){const total=items.reduce((a,f)=>a+(f.price??0),0),custom=items.some(f=>f.id==='custom'),unpriced=items.filter(f=>f.price===null&&f.id!=='custom'),parts=[];if(items.some(f=>f.price!==null)||!items.length)parts.push(`선택 기능 합계 ${money(total)}`);if(custom)parts.push('자체 제작 비용 별도 협의');if(unpriced.length)parts.push(`${unpriced.map(f=>f.name).join(', ')} 가격 협의`);return parts.join(' + ');}
 function videoOrder(v){if(Number.isFinite(v.order))return v.order;const match=v.file.match(/^(\d+)/);if(!match)throw Error('영상 순서를 확인해 주세요.');return Number(match[1]);}
 function sortedVideos(){const s=[...VIDEOS].sort((a,b)=>videoOrder(a)-videoOrder(b));if(s.length){const orders=s.map(videoOrder);if(new Set(orders).size!==orders.length||s.some(v=>!FEATURES.some(f=>f.id===v.feature)))throw Error('영상 순서 또는 기능 연결을 확인해 주세요.');}return s;}
-function card(f,v){return `<article class="work"><div class="media">${v?`<video autoplay muted loop playsinline preload="none" data-src="${esc(v.src)}" aria-label="${esc(v.title||f.name)} 영상" aria-expanded="false" title="눌러서 크게 보기. 다시 누르면 원래 크기로 돌아갑니다."></video><button type="button" class="play" hidden>▶ 재생</button><p class="media-error" hidden>영상을 불러오지 못했습니다.</p>`:`<div class="placeholder"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7" stroke="currentColor"/><path d="M13 10l9 6-9 6V10Z" fill="currentColor"/></svg><span>영상 연결 예정</span></div>`}</div><div class="work-info"><div class="work-head"><h3>${esc(v?.title||f.name)}</h3><span class="price">${price(f)}</span></div>${f.description?`<p>${esc(f.description)}</p>`:''}${['strong','throw'].includes(f.id)?'<div class="tags"><span class="tag">숲 · 별풍선 PROP</span><span class="tag">치지직 · 치즈 PROP</span></div>':''}</div></article>`;}
+function card(f,v){return `<article class="work"><div class="media">${v?`<video autoplay muted loop playsinline preload="none" data-src="${esc(v.src)}" aria-label="${esc(v.title||f.name)} 영상 크게 보기" title="눌러서 크게 보기"></video><button type="button" class="play" hidden>▶ 재생</button><p class="media-error" hidden>영상을 불러오지 못했습니다.</p>`:`<div class="placeholder"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7" stroke="currentColor"/><path d="M13 10l9 6-9 6V10Z" fill="currentColor"/></svg><span>영상 연결 예정</span></div>`}</div><div class="work-info"><div class="work-head"><h3>${esc(v?.title||f.name)}</h3><span class="price">${price(f)}</span></div>${f.description?`<p>${esc(f.description)}</p>`:''}${['strong','throw'].includes(f.id)?'<div class="tags"><span class="tag">숲 · 별풍선 PROP</span><span class="tag">치지직 · 치즈 PROP</span></div>':''}</div></article>`;}
 const PORTFOLIO_GROUPS=[
  {title:'신규 의상 공개',ids:['transform']},
  {title:'기타',ids:['movingHeart','karaoke']},
@@ -264,13 +274,12 @@ function application(){return ['[와루도 API 제작 신청서]','',`방송 닉
 form.addEventListener('change',()=>{$('#total').textContent=totalLabel(selected());$('#custom-help').hidden=!selected().some(f=>f.id==='custom');clearErrors();$('#status').textContent='';$('#manual').hidden=true;});form.addEventListener('input',()=>{$('#manual').hidden=true;$('#status').textContent='';});form.addEventListener('submit',async e=>{e.preventDefault();if(!validate())return;const text=application();$('#output').value=text;try{await navigator.clipboard.writeText(text);$('#status').textContent='신청 내용이 복사되었습니다. 아트머그 문의창에 붙여넣어 보내주세요.';}catch{$('#status').textContent='자동 복사가 제한되어 있습니다. 아래 신청서를 직접 선택하여 복사해 주세요.';}$('#manual').hidden=false;});$('#select-output').onclick=()=>{$('#output').focus();$('#output').select();};
 let paused=false;const visible=new Set();async function play(v){if(paused||document.hidden)return;v.muted=true;v.defaultMuted=true;if(!v.src){v.src=v.dataset.src;v.load();}try{await v.play();if(paused||document.hidden||!visible.has(v)){v.pause();return;}v.nextElementSibling.hidden=true;}catch{if(visible.has(v)&&!paused)v.nextElementSibling.hidden=false;}}
 const observer='IntersectionObserver'in window?new IntersectionObserver(entries=>entries.forEach(({target,isIntersecting})=>{if(isIntersecting){visible.add(target);play(target);}else{visible.delete(target);target.pause();}}),{threshold:.05}):null;
-function toggleExpandedVideo(v){
- const card=v.closest('.work');if(!card)return;
- const wasExpanded=card.classList.contains('is-expanded');
- document.querySelectorAll('.work.is-expanded').forEach(item=>{item.classList.remove('is-expanded');const video=item.querySelector('video');if(video){video.setAttribute('aria-expanded','false');video.title='눌러서 크게 보기. 다시 누르면 원래 크기로 돌아갑니다.';}});
- if(!wasExpanded){card.classList.add('is-expanded');v.setAttribute('aria-expanded','true');v.title='눌러서 원래 크기로 돌아갑니다.';}
- paused=false;visible.add(v);play(v);
-}
-$$('video').forEach(v=>{v.muted=true;v.nextElementSibling.onclick=()=>{paused=false;visible.add(v);play(v);};v.addEventListener('click',()=>toggleExpandedVideo(v));v.addEventListener('error',()=>{v.parentElement.querySelector('.media-error').hidden=false;});if(observer)observer.observe(v);else{visible.add(v);play(v);}});document.addEventListener('visibilitychange',()=>{if(document.hidden)$$('video').forEach(v=>v.pause());else{visible.forEach(play);}});
+const viewer=$('#video-viewer'),viewerVideo=$('#viewer-video'),viewerPlay=$('#viewer-play');
+let viewerAnchorY=12;
+function positionViewer(){if(!viewer.open)return;const height=viewer.getBoundingClientRect().height;const viewport=window.innerHeight;const maxTop=Math.max(12,viewport-height-12);const desired=viewerAnchorY-height/2;viewer.style.setProperty('--viewer-top',`${Math.max(12,Math.min(desired,maxTop))}px`);}
+function openViewer(v){paused=true;visible.forEach(x=>x.pause());const src=v.dataset.src||v.currentSrc||v.src;if(!src)return;const rect=v.getBoundingClientRect();viewerAnchorY=rect.top+rect.height/2;$('#viewer-title').textContent=(v.getAttribute('aria-label')||'영상 보기').replace(' 영상 크게 보기','');const startAt=Number.isFinite(v.currentTime)?v.currentTime:0;viewerVideo.src=src;viewerVideo.load();viewerVideo.addEventListener('loadedmetadata',()=>{if(startAt>0&&Number.isFinite(viewerVideo.duration))viewerVideo.currentTime=Math.min(startAt,Math.max(0,viewerVideo.duration-.05));},{once:true});viewer.showModal();requestAnimationFrame(positionViewer);viewerVideo.play().then(()=>viewerPlay.hidden=true).catch(()=>viewerPlay.hidden=false);}
+function cleanViewer(){viewerVideo.pause();viewerVideo.removeAttribute('src');viewerVideo.load();paused=false;visible.forEach(play);}
+$('#viewer-close').addEventListener('click',()=>viewer.close());viewer.addEventListener('close',cleanViewer);viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close();});viewerPlay.addEventListener('click',()=>viewerVideo.play().then(()=>viewerPlay.hidden=true).catch(()=>viewerPlay.hidden=false));window.addEventListener('resize',positionViewer,{passive:true});
+$$('video:not(#viewer-video)').forEach(v=>{v.muted=true;v.nextElementSibling.onclick=()=>{paused=false;visible.add(v);play(v);};v.addEventListener('click',()=>openViewer(v));v.addEventListener('error',()=>{v.parentElement.querySelector('.media-error').hidden=false;});if(observer)observer.observe(v);else{visible.add(v);play(v);}});document.addEventListener('visibilitychange',()=>{if(document.hidden)$$('video').forEach(v=>v.pause());else{visible.forEach(play);if(viewer.open)viewerVideo.play().catch(()=>viewerPlay.hidden=false);}});
 if(window.parent!==window&&'ResizeObserver'in window){let last=0;new ResizeObserver(()=>{const height=Math.ceil(document.body.getBoundingClientRect().height);if(height!==last){last=height;window.parent.postMessage({type:'warudo-page-height',height},CONFIG.parentOrigin);}}).observe(document.body);}
 </script></body></html>
