@@ -232,8 +232,8 @@ function videoOrder(v){if(Number.isFinite(v.order))return v.order;const match=v.
 function sortedVideos(){const s=[...VIDEOS].sort((a,b)=>videoOrder(a)-videoOrder(b));if(s.length){const orders=s.map(videoOrder);if(new Set(orders).size!==orders.length||s.some(v=>!FEATURES.some(f=>f.id===v.feature)))throw Error('영상 순서 또는 기능 연결을 확인해 주세요.');}return s;}
 function card(f,v){return `<article class="work"><div class="media">${v?`<video autoplay muted loop playsinline preload="none" data-src="${esc(v.src)}" aria-label="${esc(v.title||f.name)} 영상 크게 보기" title="눌러서 크게 보기"></video><button type="button" class="play" hidden>▶ 재생</button><p class="media-error" hidden>영상을 불러오지 못했습니다.</p>`:`<div class="placeholder"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7" stroke="currentColor"/><path d="M13 10l9 6-9 6V10Z" fill="currentColor"/></svg><span>영상 연결 예정</span></div>`}</div><div class="work-info"><div class="work-head"><h3>${esc(v?.title||f.name)}</h3><span class="price">${price(f)}</span></div>${f.description?`<p>${esc(f.description)}</p>`:''}${['strong','throw'].includes(f.id)?'<div class="tags"><span class="tag">숲 · 별풍선 PROP</span><span class="tag">치지직 · 치즈 PROP</span></div>':''}</div></article>`;}
 const PORTFOLIO_GROUPS=[
- {title:'최적화',ids:['optimization']},
  {title:'신규 의상 공개',ids:['transform']},
+ {title:'최적화',ids:['optimization']},
  {title:'기타',ids:['movingHeart','karaoke']},
  {title:'시청자 티키타카',ids:['heart']},
  {title:'기본 API',ids:['eyeheart','strong','ping','hammer','throw','truck']},
